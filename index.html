@@ -1,13 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>wumpus-agent</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wumpus World — AI Pathfinding Agent</title>
+  <meta name="description" content="Knowledge-based AI agent navigating Wumpus World using propositional logic and resolution refutation." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Using Plus Jakarta Sans for a premium SaaS look -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="layout-wrapper">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar sidebar-left">
+      <div class="brand">
+        <div class="brand-logo">
+          <span class="logo-icon">🧠</span>
+        </div>
+        <div class="brand-text">
+          <h1>Wumpus World</h1>
+          <p>AI Agent</p>
+        </div>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Configuration Section -->
+        <section class="panel" id="controls-panel">
+          <h3 class="panel-title">Configuration</h3>
+          <div class="input-row">
+            <div class="input-group">
+              <label for="input-rows">Rows</label>
+              <input type="number" id="input-rows" value="4" min="3" max="10" />
+            </div>
+            <span class="input-x">×</span>
+            <div class="input-group">
+              <label for="input-cols">Cols</label>
+              <input type="number" id="input-cols" value="4" min="3" max="10" />
+            </div>
+          </div>
+          <button id="btn-new-game" class="btn btn-primary">
+            <span class="btn-icon">🎲</span> New Game
+          </button>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Execution Section -->
+        <section class="panel">
+          <h3 class="panel-title">Execution</h3>
+          <div class="control-actions">
+            <button id="btn-step" class="btn btn-secondary" disabled>
+              <span class="btn-icon">👣</span> Step
+            </button>
+            <button id="btn-auto" class="btn btn-accent" disabled>
+              <span class="btn-icon">▶</span> Auto Run
+            </button>
+          </div>
+          <div class="speed-control">
+            <label for="speed-slider">Speed</label>
+            <input type="range" id="speed-slider" min="100" max="2000" value="600" step="100" />
+            <span id="speed-value">600ms</span>
+          </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Legend Section -->
+        <section class="panel" id="legend-panel">
+          <h3 class="panel-title">Map Legend</h3>
+          <div class="legend-items">
+            <div class="legend-item"><span class="legend-swatch agent"></span> Agent</div>
+            <div class="legend-item"><span class="legend-swatch visited"></span> Visited</div>
+            <div class="legend-item"><span class="legend-swatch safe"></span> Proven Safe</div>
+            <div class="legend-item"><span class="legend-swatch unknown"></span> Unknown</div>
+            <div class="legend-item"><span class="legend-swatch danger"></span> Danger</div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        
+        <div id="status-bar" class="status-bar">
+          <div class="status-indicator">
+            <span id="status-icon">🤖</span>
+          </div>
+          <span id="status-message">Press "New Game" to begin.</span>
+        </div>
+
+        <div class="header-stats">
+          <!-- Metrics -->
+          <div class="metrics-group" id="metrics-panel">
+            <div class="metric-card">
+              <span class="metric-label">Inference</span>
+              <div class="metric-value" id="metric-inference">0</div>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">KB Size</span>
+              <div class="metric-value" id="metric-kb">0</div>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Explored</span>
+              <div class="metric-value"><span id="metric-explored">0</span><span class="metric-divider">/</span><span id="metric-total">0</span></div>
+            </div>
+          </div>
+
+          <div class="v-divider"></div>
+
+          <!-- Percepts -->
+          <div class="percepts-group" id="percepts-panel">
+            <div class="percept-badge" id="percept-breeze">
+              <span class="percept-icon">💨</span>
+              <span>Breeze</span>
+            </div>
+            <div class="percept-badge" id="percept-stench">
+              <span class="percept-icon">💀</span>
+              <span>Stench</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CANVAS AREA -->
+      <div class="canvas-area" id="grid-area">
+        <div class="canvas-background"></div>
+        <div id="grid-container" class="grid-container"></div>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar sidebar-right" id="log-sidebar">
+      <div class="sidebar-header">
+        <h3 class="panel-title">Activity Log</h3>
+      </div>
+      <div class="sidebar-content" id="log-panel">
+        <div id="log-entries">
+          <div class="log-entry log-system">Waiting for game start...</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
